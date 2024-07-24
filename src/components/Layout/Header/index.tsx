@@ -1,10 +1,10 @@
 import Nav from "@/components/Nav";
-import PageTitle from "@/components/PageTitle";
+import MainTitle from "@/components/MainTitle";
 
 function Header() {
 	return (
-		<div className="p-4">
-			<PageTitle title="Collabradoc" />
+		<div className="p-4 border-b border-black">
+			<MainTitle title="Collabradoc" />
 			<div className="flex justify-end">
 				<Nav />
 			</div>

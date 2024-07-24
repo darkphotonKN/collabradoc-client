@@ -19,7 +19,7 @@ export const navData: NavData = [
     link: "/login",
   },
   {
-    name: "Register",
-    link: "/register",
+    name: "Signup",
+    link: "/signup",
   },
 ];
