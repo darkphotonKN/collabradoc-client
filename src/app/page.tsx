@@ -22,21 +22,28 @@ const Home = () => {
     };
 
     socket.onmessage = (event) => {
-      const { data: json } = event;
-      const message = JSON.parse(json);
-      console.log("Message:", message);
+      const reader = new FileReader();
 
-      // use type to determine how to handle the data
-      // TODO: update to custom binary communication protocol
-      switch (message.message_type) {
-        case "client_list": {
-          setClientList(message.value);
-          break;
-        }
-        default: {
-          break;
-        }
-      }
+      reader.onload = function() {
+        console.log("reader result:", reader.result);
+        const buffer = reader.result as ArrayBuffer;
+
+        const dataView = new DataView(buffer);
+
+        const action = dataView.getUint8(0);
+        const valueLength = dataView.getUint8(1);
+        const decoder = new TextDecoder();
+
+        // grabs the buffer's value from index 2 to the length of the value string
+        const value = decoder.decode(new Uint8Array(buffer, 2, valueLength));
+
+        console.log("action:", action);
+        console.log("valueLength", valueLength);
+        console.log("value:", value);
+      };
+
+      // read the file as Array Buffer
+      reader.readAsArrayBuffer(event.data);
     };
 
     socket.onclose = () => {
