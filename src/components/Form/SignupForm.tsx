@@ -1,4 +1,5 @@
 import { postRequest } from "@/lib/api/requestHelpers";
+import { AxiosResponse } from "axios";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
@@ -9,8 +10,13 @@ type Values = {
 	email: string;
 };
 
+type SignupRes = {
+	data: string;
+	status: number;
+};
+
 function SignupForm() {
-	const [res, setRes] = useState();
+	const [res, setRes] = useState<SignupRes | AxiosResponse<any, any> | null>();
 
 	const SignupSchema = Yup.object().shape({
 		name: Yup.string()
@@ -37,8 +43,10 @@ function SignupForm() {
 				values: Values,
 				{ setSubmitting }: FormikHelpers<Values>,
 			) => {
-				const res = await postRequest("/user/signup", values);
+				const res = await postRequest<SignupRes>("/user/signup", values);
 				console.log("res:", res);
+
+				setRes(res);
 			}}
 		>
 			{({ errors, touched }) => (
@@ -87,6 +95,24 @@ function SignupForm() {
 					{errors.password && touched.password ? (
 						<div className="mt-2 text-red-600">{errors.password}</div>
 					) : null}
+
+					{/* Sign Up Results */}
+					<div className="mt-3">
+						{res?.data && res?.status === 201 ? (
+							<div className="text-green-600">
+								Your account has been successfully created. Please check your
+								email.
+							</div>
+						) : res?.status === 400 ? (
+							<div className="text-red-600">{res?.data}</div>
+						) : (
+							<div className="text-red-600">
+								Something went wrong with your request.
+							</div>
+						)}
+					</div>
+
+					{/* Submit Button */}
 					<button
 						type="submit"
 						className="rounded border text-white bg-gray-700 hover:bg-gray-300 p-2 mt-8 hover:text-gray-500 transition"

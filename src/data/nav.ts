@@ -7,11 +7,11 @@ type NavData = NavItem[];
 
 export const navData: NavData = [
   {
-    name: "Home",
+    name: "Write",
     link: "/",
   },
   {
-    name: "Docs",
+    name: "My Docs",
     link: "/docs",
   },
   {

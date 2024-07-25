@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import axiosInstance from ".";
 
-export async function getRequest<T, K extends Record<string, any>>(
+export async function getRequest<T, K extends Record<string, any> = any>(
 	endpoint: string,
 	params?: K,
 ): Promise<T | null | AxiosResponse<any | any>> {
@@ -16,7 +16,11 @@ export async function getRequest<T, K extends Record<string, any>>(
 	}
 }
 
-export async function postRequest<T, K, V extends Record<string, any>>(
+export async function postRequest<
+	T,
+	K = any,
+	V extends Record<string, any> = any,
+>(
 	endpoint: string,
 	payload: K,
 	params?: V,
