@@ -1,5 +1,7 @@
 "use client";
 
+import Editor from "@/components/Editor";
+import { ActionType, ActionTypeEnum } from "@/constants/enums";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -12,38 +14,50 @@ const Home = () => {
 
     socket.onopen = () => {
       console.log("Connected to web socket server!");
-      // Send a message to the server
-      const message = {
-        action: "greet",
-        value: "Hello, server!",
-      };
-
-      socket.send(JSON.stringify(message));
     };
 
     socket.onmessage = (event) => {
-      const reader = new FileReader();
+      // check data is blob
+      if (event.data instanceof Blob) {
+        const reader = new FileReader();
 
-      reader.onload = function() {
-        console.log("reader result:", reader.result);
-        const buffer = reader.result as ArrayBuffer;
+        reader.onload = function() {
+          console.log("reader result:", reader.result);
+          const buffer = reader.result as ArrayBuffer;
 
-        const dataView = new DataView(buffer);
+          const dataView = new DataView(buffer);
 
-        const action = dataView.getUint8(0);
-        const valueLength = dataView.getUint8(1);
-        const decoder = new TextDecoder();
+          const action = dataView.getUint8(0) as ActionTypeEnum;
 
-        // grabs the buffer's value from index 2 to the length of the value string
-        const value = decoder.decode(new Uint8Array(buffer, 2, valueLength));
+          // decode method is based on action type
 
-        console.log("action:", action);
-        console.log("valueLength", valueLength);
-        console.log("value:", value);
-      };
+          switch (action) {
+            case ActionType.JOIN: {
+              const valueLength = dataView.getUint8(1);
+              const decoder = new TextDecoder();
 
-      // read the file as Array Buffer
-      reader.readAsArrayBuffer(event.data);
+              // grabs the buffer's value from index 2 to the length of the value string
+              const value = decoder.decode(
+                new Uint8Array(buffer, 2, valueLength),
+              );
+
+              // testing
+              console.log("action:", action);
+              console.log("valueLength", valueLength);
+              console.log("value:", value);
+
+              break;
+            }
+
+            default: {
+              break;
+            }
+          }
+        };
+
+        // read the file as Array Buffer
+        reader.readAsArrayBuffer(event.data);
+      }
     };
 
     socket.onclose = () => {
@@ -54,7 +68,13 @@ const Home = () => {
     setWs(socket);
 
     return () => {
-      socket.close();
+      socket.close(
+        1000,
+        JSON.stringify({
+          action: "leave",
+          value: "",
+        }),
+      );
     };
   }, []);
 
@@ -64,7 +84,7 @@ const Home = () => {
 
     ws?.send(
       JSON.stringify({
-        action: "join_game",
+        action: "join_doc",
         value: name,
       }),
     );
@@ -105,7 +125,7 @@ const Home = () => {
             </button>
           </div>
         </div>
-        <div className="mt-4 rounded bg-white w-full min-h-screen"></div>
+        <Editor ws={ws} />
       </div>
     </div>
   );
