@@ -33,9 +33,24 @@ const Home = () => {
 
   // Handling Websocket
   useEffect(() => {
-    const socket = new WebSocket("ws://localhost:5050/ws");
+    // get token from local storage
+    const accessToken = localStorage.getItem("access");
+    console.log("access token:", accessToken);
+
+    const socket = new WebSocket(`ws://localhost:5050/ws?token=${accessToken}`);
+
     socket.onopen = () => {
       console.log("Connected to web socket server!");
+      ws?.send(
+        JSON.stringify({
+          action: "join_doc",
+          value: name,
+        }),
+      );
+    };
+
+    socket.onerror = (error) => {
+      console.log("Websocket error:", error);
     };
 
     socket.onmessage = (event) => {
@@ -95,6 +110,7 @@ const Home = () => {
 
               setUsers(receivedUserList);
             }
+
             default: {
               break;
             }
@@ -181,24 +197,18 @@ const Home = () => {
       socket.close(
         1000,
         JSON.stringify({
-          action: "leave",
+          action: "disconnected",
           value: "",
         }),
       );
     };
   }, []);
 
-  function handleJoinEditor() {
-    console.log("joining editor");
-    console.log("client list length:", client.length);
-
-    ws?.send(
-      JSON.stringify({
-        action: "join_doc",
-        value: name,
-      }),
-    );
-  }
+  // function handleJoinEditor() {
+  //   console.log("joining editor");
+  //   console.log("client list length:", client.length);
+  //
+  // }
 
   function handleInpChange(e: any) {
     setName(e.target.value);
@@ -209,39 +219,13 @@ const Home = () => {
 
   return (
     <div>
+      {/* System Message */}
       <div
         className={`absolute top-[95vh] left-1/2 transform -translate-x-1/2 rounded-md border border-gray-900 p-2 transition ease-in duration-350 ${systemMsgPopup ? "opacity-100 -translate-y-[15px]" : "opacity-0"}`}
       >
         {systemMsg}
       </div>
       <div className="py-[20px] px-[80px] bg-gray-400">
-        {/* Client List */}
-        <div className="bg-white rounded w-[300px] flex flex-col p-3">
-          <h3>Editors</h3>
-
-          {client.map((player) => (
-            <div>{player}</div>
-          ))}
-
-          <div className="mt-4 flex flex-col">
-            <input
-              style={{ width: "200px" }}
-              onChange={handleInpChange}
-              value={name}
-            />
-            <button
-              style={{
-                marginTop: "40px",
-                width: "200px",
-                borderRadius: "4px",
-                border: "1px solid #1a1a1a",
-              }}
-              onClick={handleJoinEditor}
-            >
-              Join Editor
-            </button>
-          </div>
-        </div>
         <Editor ws={ws} />
       </div>
     </div>
