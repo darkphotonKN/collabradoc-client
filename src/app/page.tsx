@@ -1,6 +1,7 @@
 "use client";
 
 import Editor from "@/components/Editor";
+import EditorList from "@/components/EditorList";
 import { User } from "@/constants/doc";
 import { ActionType, ActionTypeEnum } from "@/constants/enums";
 import { useEffect, useState } from "react";
@@ -105,70 +106,11 @@ const Home = () => {
 
               const receivedUserList = value.split(LIST_DELIMITER);
 
-              console.log("editor list valueLength:", valueLength);
               console.log("editor list value:", value);
 
               setUsers(receivedUserList);
             }
 
-            default: {
-              break;
-            }
-          }
-        };
-
-        // read the file as Array Buffer
-        reader.readAsArrayBuffer(event.data);
-      } // check data is blob
-      if (event.data instanceof Blob) {
-        const reader = new FileReader();
-
-        reader.onload = function() {
-          console.log("reader result:", reader.result);
-          const buffer = reader.result as ArrayBuffer;
-
-          const dataView = new DataView(buffer);
-          console.log("incoming buffer from new DataView:", dataView);
-
-          const action = dataView.getUint8(0) as ActionTypeEnum;
-
-          // decode method is based on action type
-
-          console.log("decoded action from binary:", action);
-
-          switch (action) {
-            case ActionType.JOIN: {
-              const valueLength = dataView.getUint8(1);
-              const decoder = new TextDecoder();
-
-              // grabs the buffer's value from index 2 to the length of the value string
-              const value = decoder.decode(
-                new Uint8Array(buffer, 2, valueLength),
-              );
-
-              // testing
-              // console.log("action:", action);
-              // console.log("valueLength", valueLength);
-              // console.log("value:", value);
-
-              setSystemMsgPopup(true);
-              setSystemMsg(`${value} has joined the document.`);
-
-              break;
-            }
-
-            case ActionType.EDITOR_LIST: {
-              const valueLength = dataView.getUint8(1);
-              // const decoder = new TextDecoder();
-
-              // decode user list out of binary
-              // const value = decoder.decode(
-              //   new Uint8Array(buffer, 2, valueLength),
-              // );
-
-              console.log("editor list valueLength:", valueLength);
-              // console.log("editor list value:", value);
-            }
             default: {
               break;
             }
@@ -204,12 +146,6 @@ const Home = () => {
     };
   }, []);
 
-  // function handleJoinEditor() {
-  //   console.log("joining editor");
-  //   console.log("client list length:", client.length);
-  //
-  // }
-
   function handleInpChange(e: any) {
     setName(e.target.value);
   }
@@ -219,6 +155,8 @@ const Home = () => {
 
   return (
     <div>
+      <EditorList users={users} />
+
       {/* System Message */}
       <div
         className={`absolute top-[95vh] left-1/2 transform -translate-x-1/2 rounded-md border border-gray-900 p-2 transition ease-in duration-350 ${systemMsgPopup ? "opacity-100 -translate-y-[15px]" : "opacity-0"}`}
