@@ -15,7 +15,7 @@ function Editor({ ws }: EditorProps) {
 	useEffect(() => {
 		if (editorContent) {
 			console.log("sending back to websocket");
-			ws?.send(JSON.stringify({ action: "join_game", value: editorContent }));
+			ws?.send(JSON.stringify({ action: "edit", value: editorContent }));
 		}
 	}, [editorContent]);
 
