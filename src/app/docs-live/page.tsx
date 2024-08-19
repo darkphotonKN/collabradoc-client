@@ -11,7 +11,6 @@ export default function DocsLive() {
     return <LiveEditorError />;
   }
 
-  console.log("@live query:", params);
   return <LiveEditor sessionId={sessionId} documentId={documentId} />;
 }
 

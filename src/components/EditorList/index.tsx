@@ -50,7 +50,7 @@ transition-shadow ${isHovered ? "shadow-2xl" : "shadow-lg"}`}
 			<div className="font-semibold mb-2">Current Editors</div>
 			{users?.map((user, index) => (
 				<div
-					className={`transition duration-400 ease-in ${userHovered.length ? (userHovered[index].hovered ? "font-semibold" : "font-normal") : ""}`}
+					className={`transition duration-400 ease-in ${userHovered.length ? (userHovered[index]?.hovered ? "font-semibold" : "font-normal") : ""}`}
 					key={index + user}
 					onMouseEnter={() => handleUserHovered(index, true)}
 					onMouseLeave={() => handleUserHovered(index, false)}
