@@ -42,7 +42,9 @@ export async function postRequest<T, K = any>(
       headers = { ...headers, Authorization: `Bearer ${token}` };
     }
 
-    const response = await axiosInstance.post<T>(endpoint, payload, headers);
+    const response = await axiosInstance.post<T>(endpoint, payload, {
+      headers,
+    });
 
     return response?.data;
   } catch (err) {

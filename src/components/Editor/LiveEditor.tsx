@@ -9,12 +9,22 @@ type LiveEditorProps = {
 
 export default function LiveEditor({ sessionId, documentId }: LiveEditorProps) {
 	// setup websocket
-	const { ws, users, systemMsg, systemMsgPopup } = useWebsocketServer({
-		sessionId,
-		documentId,
-	});
+	const { ws, liveSessionAuthorized, users, systemMsg, systemMsgPopup } =
+		useWebsocketServer({
+			sessionId,
+			documentId,
+		});
 
 	console.log("systemMsgPopup", systemMsgPopup);
+
+	if (!liveSessionAuthorized) {
+		return (
+			<div className="h-[100vh] flex justify-center items-center">
+				You are unauthorized to view this page. Please request an invite or ask
+				check your email for unaccepted ones.
+			</div>
+		);
+	}
 
 	return (
 		<div>

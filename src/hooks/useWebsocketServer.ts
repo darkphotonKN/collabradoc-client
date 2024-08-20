@@ -1,7 +1,12 @@
 import { LIST_DELIMITER } from "@/constants/comm-protocol";
 import { ActionType, ActionTypeEnum } from "@/constants/enums";
 import { getToken } from "@/lib/auth/jwt";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import {
+  authorizeLiveSession,
+  createLiveSession,
+} from "@/lib/auth/live-session";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 type WebsocketServerSetupOptions = {
   sessionId?: string;
@@ -11,12 +16,17 @@ type WebsocketServerSetupOptions = {
 export default function useWebsocketServer(
   wsServerSetupOptions?: WebsocketServerSetupOptions,
 ) {
+  const router = useRouter();
+
   const [users, setUsers] = useState<string[] | null>(null);
 
   const [systemMsg, setSystemMsg] = useState("");
   const [systemMsgPopup, setSystemMsgPopup] = useState(false);
 
   const [ws, setWs] = useState<WebSocket | null>(null);
+
+  const [liveSessionAuthorized, setLiveSessionAuthorized] =
+    useState<boolean>(false);
 
   // -- Setup WebSocket --
   useEffect(() => {
@@ -125,6 +135,31 @@ export default function useWebsocketServer(
     };
   }, []);
 
+  // -- Handle Live Session Authorization --
+  useEffect(() => {
+    // handle authorization only if websocket server has setup and authorized
+    // and sessionId and documentId has both been provided
+    if (ws) {
+      generateLiveSession();
+    }
+
+    // authorizeLiveSession(sessionId);
+  }, [ws]);
+
+  // establish live session state
+  async function generateLiveSession() {
+    const { sessionId, documentId } = wsServerSetupOptions ?? {};
+
+    if (!sessionId || !documentId) return;
+
+    const liveSessionAuthorized = await authorizeLiveSession(sessionId);
+
+    // redirect if authorization fails
+
+    console.log("live session authorized:", liveSessionAuthorized);
+    setLiveSessionAuthorized(liveSessionAuthorized);
+  }
+
   // -- System Message Handling --
   useEffect(() => {
     if (systemMsg) {
@@ -139,5 +174,5 @@ export default function useWebsocketServer(
     }, 2200);
   }, [systemMsg]);
 
-  return { ws, users, systemMsg, systemMsgPopup };
+  return { ws, liveSessionAuthorized, users, systemMsg, systemMsgPopup };
 }
