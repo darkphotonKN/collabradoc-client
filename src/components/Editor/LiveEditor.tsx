@@ -1,6 +1,7 @@
 import EditorList from "../EditorList";
 import Editor from ".";
 import useWebsocketServer from "@/hooks/useWebsocketServer";
+import EditorOptions from "./EditorOptions";
 
 type LiveEditorProps = {
 	sessionId?: string;
@@ -37,6 +38,10 @@ export default function LiveEditor({ sessionId, documentId }: LiveEditorProps) {
 				{systemMsg}
 			</div>
 			<div className="py-[20px] px-[80px] bg-gray-400">
+				{/* Editor Options*/}
+				<EditorOptions />
+
+				{/* Document Editor*/}
 				<Editor ws={ws} />
 			</div>
 		</div>

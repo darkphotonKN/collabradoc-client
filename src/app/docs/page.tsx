@@ -18,10 +18,19 @@ export default function Docs() {
       <div className="font-semibold text-[20px] text-right">Documents</div>
 
       {/* Document List */}
-      <div>
-        {data?.data?.map((document: Doc) => (
-          <DocumentBlock doc={document} key={document.id} />
-        ))}
+      <div className="flex flex-row align-center justify-center gap-[120px]">
+        {/* Personal */}
+        <div>
+          <div>Personal</div>
+          {data?.data?.map((document: Doc) => (
+            <DocumentBlock doc={document} key={document.id} />
+          ))}
+        </div>
+
+        {/* Invited  */}
+        <div>
+          <div>Invited</div>
+        </div>
       </div>
     </div>
   );

@@ -31,19 +31,16 @@ export default function DocumentBlock({ doc }: { doc: Doc }) {
 	}
 
 	return (
-		<div className="my-4 py-[12px] px-[15px] flex flex-col gap-2 justify-between w-[240px] h-[140px] border border-black rounded">
+		<div className="my-4 py-[12px] px-[15px] flex flex-col gap-2 justify-between w-[260px] h-[140px] border border-black rounded">
 			<div>{format(doc.createdAt ?? "", "MMMM do, yyyy")}</div>
 			<div>{doc.title}</div>
 			<div>{doc.comment}</div>
-			<div className="flex justify-between items-between">
+			<div className="flex">
 				<button
 					onClick={handleLiveSession}
 					className="w-[100px] border border-black rounded cursor-pointer"
 				>
-					Edit
-				</button>
-				<button className="w-[100px] border border-black rounded cursor-pointer">
-					Preview
+					{doc.liveSession.sessionId ? "edit" : "create"}
 				</button>
 			</div>
 		</div>

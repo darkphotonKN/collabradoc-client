@@ -1,10 +1,7 @@
 import { LIST_DELIMITER } from "@/constants/comm-protocol";
 import { ActionType, ActionTypeEnum } from "@/constants/enums";
 import { getToken } from "@/lib/auth/jwt";
-import {
-  authorizeLiveSession,
-  createLiveSession,
-} from "@/lib/auth/live-session";
+import { authorizeLiveSession } from "@/lib/auth/live-session";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -34,7 +31,9 @@ export default function useWebsocketServer(
     console.log("access token:", accessToken);
 
     // connect to websocket server with jwt authentication
-    const socket = new WebSocket(`ws://localhost:5050/ws?token=${accessToken}`);
+    const socket = new WebSocket(
+      `ws://localhost:5050/ws?token=${accessToken}&sessionId=${wsServerSetupOptions?.sessionId}`,
+    );
 
     socket.onopen = () => {
       console.log("Connected to web socket server!");
@@ -142,8 +141,6 @@ export default function useWebsocketServer(
     if (ws) {
       generateLiveSession();
     }
-
-    // authorizeLiveSession(sessionId);
   }, [ws]);
 
   // establish live session state
@@ -153,8 +150,6 @@ export default function useWebsocketServer(
     if (!sessionId || !documentId) return;
 
     const liveSessionAuthorized = await authorizeLiveSession(sessionId);
-
-    // redirect if authorization fails
 
     console.log("live session authorized:", liveSessionAuthorized);
     setLiveSessionAuthorized(liveSessionAuthorized);
