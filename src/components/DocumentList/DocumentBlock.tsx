@@ -24,6 +24,7 @@ export default function DocumentBlock({ doc }: { doc: Doc }) {
 	// create live session when user attempts to edit document
 	async function handleLiveSession() {
 		const liveSessionLink = await createLiveSession(doc.id);
+		console.log("liveSessionLink:", liveSessionLink);
 
 		if (liveSessionLink) {
 			router.push(liveSessionLink);

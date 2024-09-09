@@ -22,12 +22,12 @@ export async function authorizeLiveSession(
   return response.data;
 }
 
-export async function getLiveSession(documentId: string) {}
+export async function getLiveSession(documentId: string) { }
 
 export async function createLiveSession(
   documentId: number,
 ): Promise<string | undefined> {
-  console.log("A live session is being created...");
+  console.log("liveSessionLink getting with documentId:", documentId);
 
   const response = await postRequest<ApiResponse<string>>(
     "/livesession",
