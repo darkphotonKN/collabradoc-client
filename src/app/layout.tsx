@@ -1,20 +1,13 @@
 import type { Metadata } from "next";
-import {
-  Cabin,
-  Karla,
-  Libre_Baskerville,
-  Lora,
-  Nanum_Gothic,
-  Nanum_Myeongjo,
-  Noto_Serif,
-} from "next/font/google";
+import { Cabin, Laila, Lora } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Nav from "@/components/Nav";
 import MainTitle from "@/components/MainTitle";
 
+// Current Best: Cabin, Decent: Laila
 const fontFamily = Cabin({
-  weight: ["400", "700"],
+  weight: ["400", "500", "700"],
   style: "normal",
   subsets: ["latin"],
 });
@@ -34,7 +27,7 @@ export default function RootLayout({
       <body className={fontFamily.className}>
         <div className="flex">
           {/* Side Area  */}
-          <div className="w-[312px] min-h-screen h-full py-8 px-4 border-r border-customGray">
+          <div className="w-[332px] min-h-screen h-full py-8 px-4 border-r border-customGray">
             <MainTitle title="Collabradoc" />
             <Nav />
           </div>

@@ -21,8 +21,9 @@ export type Doc = {
 };
 
 export default function DocumentBlock({ doc }: { doc: Doc }) {
-	const [hover, setHover] = useState(false);
 	const router = useRouter();
+	const [hover, setHover] = useState(false);
+	const [blockHover, setBlockHover] = useState(false);
 
 	// create live session when user attempts to edit document
 	async function handleLiveSession() {
@@ -39,43 +40,51 @@ export default function DocumentBlock({ doc }: { doc: Doc }) {
 		setTimeout(() => setHover(hoverState), 100);
 	}
 
+	// makes document public to be shared to the entire community
+	async function handleTogglePrivacy() { }
+
 	return (
 		<div
 			className={
-				"my-4 p-5 flex flex-col gap-2 justify-between w-[260px] h-[180px] border border-customBorderGray rounded-2xl transition-shadow shadow-customBlockShadow hover:shadow-customBlockShadowHover"
+				"text-md my-4 p-5 flex flex-col gap-2 justify-between w-[260px] h-[180px] border border-customBorderGray rounded-2xl transition-shadow shadow-customBlockShadow hover:shadow-customBlockShadowHover"
 			}
+			onMouseEnter={() => setBlockHover(true)}
+			onMouseLeave={() => setBlockHover(false)}
 		>
-			<div>{format(doc.createdAt ?? "", "MMMM do, yyyy")}</div>
-			<div>{doc.title}</div>
+			<div className="flex justify-between">
+				<div className="text-xs">
+					{format(doc.createdAt ?? "", "MMMM do, yyyy")}
+				</div>
+
+				{blockHover && (
+					<Image
+						className="cursor-pointer"
+						height={18}
+						width={18}
+						alt={"edit-icon"}
+						src={"/images/privacy-icon.png"}
+						onClick={() => handleTogglePrivacy()}
+					/>
+				)}
+			</div>
+			<div className="font-medium">{doc.title}</div>
 			<div>{doc.comment}</div>
 			<div className="flex">
 				<button
 					onClick={handleLiveSession}
-					className="text-sm h-[32px] w-[32px] hover:w-[60px] transition-all duration-300 rounded-[50%] hover:rounded-3xl border border-customBorderGray cursor-pointer"
+					className="text-sm h-[32px] w-[32px] hover:w-[74px] transition-all duration-300 rounded-[50%] hover:rounded-3xl border border-customBorderGray cursor-pointer"
 					onMouseEnter={() => handleHover(true)}
 					onMouseLeave={() => setHover(false)}
 				>
-					{doc.liveSession.sessionId ? (
-						<div className="flex gap-2 justify-center items-center content-center">
-							<Image
-								height={15}
-								width={15}
-								alt={"edit-icon"}
-								src={"/images/edit-icon.png"}
-							/>
-							{hover ? "edit" : ""}
-						</div>
-					) : (
-						<div className="flex justify-between items-center content-center">
-							<Image
-								height={15}
-								width={15}
-								alt={"edit-icon"}
-								src={"/images/edit-icon.png"}
-							/>
-							{hover ? "Create" : ""}
-						</div>
-					)}
+					<div className="flex gap-2 justify-center items-center content-center">
+						{hover ? "Edit" : ""}
+						<Image
+							height={15}
+							width={15}
+							alt={"edit-icon"}
+							src={"/images/edit-icon.png"}
+						/>
+					</div>
 				</button>
 			</div>
 		</div>
