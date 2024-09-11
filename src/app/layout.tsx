@@ -1,9 +1,19 @@
 import type { Metadata } from "next";
-import { Quicksand } from "next/font/google";
+import {
+  Cabin,
+  Karla,
+  Libre_Baskerville,
+  Lora,
+  Nanum_Gothic,
+  Nanum_Myeongjo,
+  Noto_Serif,
+} from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Layout/Header";
+import Nav from "@/components/Nav";
+import MainTitle from "@/components/MainTitle";
 
-const quicksand = Quicksand({
+const fontFamily = Cabin({
   weight: ["400", "700"],
   style: "normal",
   subsets: ["latin"],
@@ -21,9 +31,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={quicksand.className}>
-        <Header />
-        <div>{children}</div>
+      <body className={fontFamily.className}>
+        <div className="flex">
+          {/* Side Area  */}
+          <div className="w-[312px] min-h-screen h-full py-8 px-4 border-r border-customGray">
+            <MainTitle title="Collabradoc" />
+            <Nav />
+          </div>
+
+          {/* Content Area */}
+          <div className="w-[100%]">
+            <Header />
+            <div>{children}</div>
+          </div>
+        </div>
       </body>
     </html>
   );

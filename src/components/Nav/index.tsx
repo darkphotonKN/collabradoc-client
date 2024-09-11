@@ -1,29 +1,28 @@
 "use client";
 import { navData } from "@/data/nav";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 function Nav() {
   const pathname = usePathname();
 
-  console.log(" pathname:", pathname);
-
   return (
-    <>
-      <nav className="mt-3 mr-4">
-        <ul className="flex gap-3">
-          {navData.map((navItem) => (
-            <li
-              key={navItem.link}
-              className={`-gray-900 transition-colors duration-200 ease-in
+    <nav className="mt-[100px]">
+      <ul className="flex flex-col gap-4">
+        {navData.map((navItem) => (
+          <li
+            key={navItem.link}
+            className={`w-full transition-colors duration-200 ease-in
 							hover:text-gray-500 cursor-pointer ${navItem.link === pathname ? "font-semibold" : ""}`}
-            >
-              <Link href={navItem.link}>{navItem.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </>
+          >
+            <Link href={navItem.link}>
+              <div className="flex gap-2">{navItem.name}</div>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 

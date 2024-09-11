@@ -7,19 +7,23 @@ type NavData = NavItem[];
 
 export const navData: NavData = [
   {
-    name: "Write",
+    name: "community",
+    link: "/community",
+  },
+  {
+    name: "write",
     link: "/",
   },
   {
-    name: "My Docs",
+    name: "documents",
     link: "/docs",
   },
   {
-    name: "Login",
+    name: "login",
     link: "/login",
   },
   {
-    name: "Signup",
+    name: "signup",
     link: "/signup",
   },
 ];
