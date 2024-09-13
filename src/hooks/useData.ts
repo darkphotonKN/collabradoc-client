@@ -1,5 +1,5 @@
-import { getRequest } from "@/lib/api/requestHelpers";
-import { AxiosError, AxiosResponse } from "axios";
+import { getRequest, isErrorResponse } from "@/lib/api/requestHelpers";
+import { Axios, AxiosError, AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 
 type ResError = {
@@ -8,15 +8,21 @@ type ResError = {
   errorType?: string;
 };
 
+export type ApiResponse<DataT> = {
+  status: number;
+  message: string;
+  data: DataT;
+};
+
 /*
  * Helper for http requests and saving the data in a react state together with life cycle.
  */
-export default function useData<TDep, ResK>(
+export default function useData<ResT, DepT>(
   endpoint: string,
-  dependencies?: TDep[],
+  dependencies?: DepT[],
   auth?: boolean,
 ) {
-  const [data, setData] = useState<ResK | null>();
+  const [response, setResponse] = useState<ApiResponse<ResT> | null>();
   const [error, setError] = useState<ResError | null>();
 
   useEffect(() => {
@@ -24,21 +30,24 @@ export default function useData<TDep, ResK>(
   }, [...(dependencies ?? [])]);
 
   async function getData() {
-    const res = await getRequest<ResK>(endpoint, null, { auth });
+    const res = await getRequest<ApiResponse<ResT>>(endpoint, null, { auth });
 
     if (!res) return;
 
-    if (res instanceof AxiosError) {
-      setError({
-        errorMessage: res.response?.data, // error message
-        errorCode: res.response?.status, // error code
-        errorType: res.code,
-      });
+    if (isErrorResponse(res)) {
+      if (res instanceof AxiosError) {
+        setError({
+          errorMessage: res.response?.data, // error message
+          errorCode: res.response?.status, // error code
+          errorType: res.code,
+        });
+      }
+      console.error(res);
       return;
     }
 
-    setData(res);
+    setResponse(res);
   }
 
-  return { data, error };
+  return { response, error };
 }

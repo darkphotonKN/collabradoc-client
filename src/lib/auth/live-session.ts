@@ -22,7 +22,7 @@ export async function authorizeLiveSession(
   return response.data;
 }
 
-export async function getLiveSession(documentId: string) { }
+export async function getLiveSession(documentId: string) {}
 
 export async function createLiveSession(
   documentId: number,

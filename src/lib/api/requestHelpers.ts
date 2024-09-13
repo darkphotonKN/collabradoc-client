@@ -6,11 +6,17 @@ type RequestOptions = {
   auth?: boolean;
 };
 
+type ErrorResponse = {
+  __type: "Error";
+  status: number;
+  message: string;
+};
+
 export async function getRequest<T, K extends Record<string, any> = any>(
   endpoint: string,
   params?: K,
   options?: RequestOptions,
-): Promise<T | null | AxiosError> {
+): Promise<T | null | ErrorResponse> {
   try {
     const { auth } = options ?? {};
 
@@ -34,7 +40,7 @@ export async function postRequest<T, K = any>(
   endpoint: string,
   payload: K,
   auth?: boolean,
-): Promise<T | null | AxiosError> {
+): Promise<T | null | ErrorResponse> {
   try {
     let headers = {};
     if (auth) {
@@ -52,10 +58,41 @@ export async function postRequest<T, K = any>(
   }
 }
 
-function handleAxiosError(err: unknown): AxiosError | null {
+export async function patchRequest<T, K = any>(
+  endpoint: string,
+  payload: K,
+  auth?: boolean,
+): Promise<T | null | ErrorResponse> {
+  try {
+    let headers = {};
+    if (auth) {
+      const token = getToken("access");
+      headers = { ...headers, Authorization: `Bearer ${token}` };
+    }
+
+    const response = await axiosInstance.patch<T>(endpoint, payload, {
+      headers,
+    });
+
+    return response?.data;
+  } catch (err) {
+    return handleAxiosError(err);
+  }
+}
+
+function handleAxiosError(err: unknown): ErrorResponse {
   console.error("Error:", err);
   if (axios.isAxiosError(err)) {
-    return err;
+    return {
+      __type: "Error",
+      status: err.status || 400,
+      message: err?.response?.data?.message || err.message,
+    };
   }
-  return null;
+  return { __type: "Error", status: 500, message: "Unknown error occured." };
+}
+
+// custom type guard narrowing
+export function isErrorResponse(res: any): res is ErrorResponse {
+  return res && (res as ErrorResponse).__type === "Error";
 }

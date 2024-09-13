@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Layout/Header";
 import Nav from "@/components/Nav";
 import MainTitle from "@/components/MainTitle";
+import Modal from "@/components/Modal";
 
 // Current Best: Cabin, Decent: Laila
 const fontFamily = Cabin({
@@ -25,15 +26,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={fontFamily.className}>
-        <div className="flex">
+        {/* Core Application Wrapper  */}
+        <div id="app" className="flex">
+          {/* TODO: Global Modal */}
+          {/* <Modal /> */}
+
           {/* Side Area  */}
-          <div className="w-[332px] min-h-screen h-full py-8 px-4 border-r border-customGray">
+          <div className="w-[282px] min-h-screen h-full py-8 px-4 border-r border-customGray bg-white">
             <MainTitle title="Collabradoc" />
             <Nav />
           </div>
 
           {/* Content Area */}
-          <div className="w-[100%]">
+          <div className="w-[100%] bg-customBgGray">
             <Header />
             <div>{children}</div>
           </div>

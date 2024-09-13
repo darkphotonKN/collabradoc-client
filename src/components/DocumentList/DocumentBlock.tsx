@@ -1,4 +1,5 @@
 "use client";
+import { isErrorResponse, patchRequest } from "@/lib/api/requestHelpers";
 import { createLiveSession } from "@/lib/auth/live-session";
 import { format } from "date-fns";
 import Image from "next/image";
@@ -17,10 +18,17 @@ export type Doc = {
 	updatedAt?: string;
 	comment?: string;
 	userId?: number;
+	privacy?: string;
 	liveSession: LiveSession;
 };
 
-export default function DocumentBlock({ doc }: { doc: Doc }) {
+export default function DocumentBlock({
+	doc,
+	isCommunityDoc,
+}: {
+	doc: Doc;
+	isCommunityDoc?: boolean;
+}) {
 	const router = useRouter();
 	const [hover, setHover] = useState(false);
 	const [blockHover, setBlockHover] = useState(false);
@@ -41,12 +49,18 @@ export default function DocumentBlock({ doc }: { doc: Doc }) {
 	}
 
 	// makes document public to be shared to the entire community
-	async function handleTogglePrivacy() { }
+	async function handleTogglePrivacy(docId: number) {
+		const res = await patchRequest<Doc>(`/doc/privacy/${docId}`, {}, true);
+
+		if (isErrorResponse(res)) {
+			console.log("Error while toggling privacy:", res.message);
+		}
+	}
 
 	return (
 		<div
 			className={
-				"text-md my-4 p-5 flex flex-col gap-2 justify-between w-[260px] h-[180px] border border-customBorderGray rounded-2xl transition-shadow shadow-customBlockShadow hover:shadow-customBlockShadowHover"
+				"bg-white text-md my-4 p-5 flex flex-col gap-2 justify-between w-[260px] h-[180px] border border-customBorderGray rounded-2xl transition-shadow shadow-customBlockShadow hover:shadow-customBlockShadowHover"
 			}
 			onMouseEnter={() => setBlockHover(true)}
 			onMouseLeave={() => setBlockHover(false)}
@@ -56,14 +70,14 @@ export default function DocumentBlock({ doc }: { doc: Doc }) {
 					{format(doc.createdAt ?? "", "MMMM do, yyyy")}
 				</div>
 
-				{blockHover && (
+				{blockHover && !isCommunityDoc && (
 					<Image
 						className="cursor-pointer"
 						height={18}
 						width={18}
 						alt={"edit-icon"}
 						src={"/images/privacy-icon.png"}
-						onClick={() => handleTogglePrivacy()}
+						onClick={() => handleTogglePrivacy(doc.id)}
 					/>
 				)}
 			</div>

@@ -9,16 +9,16 @@ type ApiRes<T> = {
 };
 
 export default function Docs() {
-  const { data, error } = useData<any, ApiRes<Doc[]>>("/doc", [], true);
-  const { data: liveInviteData, error: liveInviteError } = useData<
+  const { response, error } = useData<any, ApiRes<Doc[]>>("/doc", [], true);
+  const { response: liveInviteResponse, error: liveInviteError } = useData<
     any,
     ApiRes<Doc[]>
   >("/livesession/all-invites", [], true);
 
-  console.log("data:", data);
+  console.log("response:", response);
   console.log("error", error);
 
-  console.log("liveInviteData:", liveInviteData);
+  console.log("liveInviteResponse:", liveInviteResponse);
   console.log("liveInviteError", liveInviteError);
 
   return (
@@ -30,7 +30,7 @@ export default function Docs() {
         {/* Personal */}
         <div>
           <div className="font-semibold">Personal</div>
-          {data?.data?.map((document: Doc) => (
+          {response?.data?.map((document: Doc) => (
             <DocumentBlock doc={document} key={document.id} />
           ))}
         </div>
@@ -39,7 +39,7 @@ export default function Docs() {
         <div>
           <div className="font-semibold">Invited</div>
 
-          {liveInviteData?.data?.map((document: Doc) => (
+          {liveInviteResponse?.data?.map((document: Doc) => (
             <DocumentBlock doc={document} key={document.id} />
           ))}
         </div>

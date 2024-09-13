@@ -72,11 +72,6 @@ export default function useWebsocketServer(
                 new Uint8Array(buffer, 2, valueLength),
               );
 
-              // testing
-              // console.log("action:", action);
-              // console.log("valueLength", valueLength);
-              // console.log("value:", value);
-
               setSystemMsgPopup(true);
               setSystemMsg(`${value} has joined the document.`);
 

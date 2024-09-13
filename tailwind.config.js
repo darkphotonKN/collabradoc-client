@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         customGray: "#E2E8F0",
         customBorderGray: "#CBD5E1",
+        customBgGray: "#F8FAFC",
       },
       boxShadow: {
         customBlockShadow:

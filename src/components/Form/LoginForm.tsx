@@ -1,9 +1,10 @@
 "use client";
-import { postRequest } from "@/lib/api/requestHelpers";
+import { isErrorResponse, postRequest } from "@/lib/api/requestHelpers";
 import { AxiosResponse } from "axios";
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import * as Yup from "yup";
+import Button from "../Button";
 
 type Values = {
 	password: string;
@@ -46,7 +47,12 @@ function LoginForm() {
 				{ setSubmitting }: FormikHelpers<Values>,
 			) => {
 				const res = await postRequest<SignupRes>("/user/login", values);
+
 				console.log("res:", res);
+				if (isErrorResponse(res)) {
+					console.log("Error", res.message);
+					return;
+				}
 
 				setRes(res);
 			}}
@@ -93,20 +99,17 @@ function LoginForm() {
 							</div>
 						) : res?.status === 400 ? (
 							<div className="text-red-600">Error with login</div>
-						) : (
+						) : res?.status === 400 ? (
 							<div className="text-red-600">
 								Something went wrong with your request.
 							</div>
+						) : (
+							""
 						)}
 					</div>
 
 					{/* Submit Button */}
-					<button
-						type="submit"
-						className="rounded border text-white bg-gray-700 hover:bg-gray-300 p-2 mt-8 hover:text-gray-500 transition"
-					>
-						Submit
-					</button>
+					<Button width={500} height={400} text="Submit" />
 				</Form>
 			)}
 		</Formik>
