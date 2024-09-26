@@ -6,7 +6,7 @@ type RequestOptions = {
   auth?: boolean;
 };
 
-type ErrorResponse = {
+export type ErrorResponse = {
   __type: "Error";
   status: number;
   message: string;
@@ -85,7 +85,7 @@ function handleAxiosError(err: unknown): ErrorResponse {
   if (axios.isAxiosError(err)) {
     return {
       __type: "Error",
-      status: err.status || 400,
+      status: err?.response?.data?.status || 400,
       message: err?.response?.data?.message || err.message,
     };
   }
