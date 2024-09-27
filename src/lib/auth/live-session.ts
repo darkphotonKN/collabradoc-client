@@ -1,9 +1,15 @@
 // -- Live Session Helpers --
 
 import { ApiResponse } from "@/type/api";
-import { getRequest, postRequest } from "../api/requestHelpers";
-import { AxiosError } from "axios";
+import {
+  getRequest,
+  isErrorResponse,
+  postRequest,
+} from "../api/requestHelpers";
 
+/**
+ * Authrozies an existing live session via its sessionId. Returns a boolean indicating if that sessionId is authorized.
+ **/
 export async function authorizeLiveSession(
   sessionId: string,
 ): Promise<boolean> {
@@ -15,7 +21,7 @@ export async function authorizeLiveSession(
     { auth: true },
   );
 
-  if (!response || response instanceof AxiosError) return false;
+  if (!response || isErrorResponse(response)) return false;
 
   console.log("isAuthorized:", response.data);
 
@@ -24,6 +30,9 @@ export async function authorizeLiveSession(
 
 export async function getLiveSession(documentId: string) {}
 
+/**
+ * Creates a live session and returns the live session link.
+ **/
 export async function createLiveSession(
   documentId: number,
 ): Promise<string | undefined> {
@@ -35,10 +44,16 @@ export async function createLiveSession(
     true,
   );
 
-  // use narrowing / type guard to return error state
-  if (!response || response instanceof AxiosError) return;
+  if (!response || isErrorResponse(response)) return;
 
   const { data: newLiveSessionLink } = response;
 
   return newLiveSessionLink;
+}
+
+/**
+ * Validate that document is a community doc
+ **/
+export async function isCommunityDoc(documentId: string): Promise<boolean> {
+  return true;
 }

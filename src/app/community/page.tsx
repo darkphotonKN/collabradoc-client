@@ -12,7 +12,7 @@ export default function CommunityPage() {
       <div className="font-semibold text-[20px] text-right">Community</div>
 
       {response?.data?.map((doc) => (
-        <DocumentBlock key={doc.id} doc={doc} isCommunityDoc />
+        <DocumentBlock key={doc.id} doc={doc} communityDoc />
       ))}
     </div>
   );

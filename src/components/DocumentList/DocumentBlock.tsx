@@ -1,4 +1,5 @@
 "use client";
+import { Privacy } from "@/constants/doc";
 import { isErrorResponse, patchRequest } from "@/lib/api/requestHelpers";
 import { createLiveSession } from "@/lib/auth/live-session";
 import { format } from "date-fns";
@@ -25,17 +26,22 @@ export type Doc = {
 
 export default function DocumentBlock({
   doc,
-  isCommunityDoc,
+  communityDoc,
 }: {
   doc: Doc;
-  isCommunityDoc?: boolean;
+  communityDoc: boolean;
 }) {
   const router = useRouter();
   const [hover, setHover] = useState(false);
   const [blockHover, setBlockHover] = useState(false);
 
   // create live session when user attempts to edit document
-  async function handleLiveSession() {
+  async function handleLiveSession(isPrivateDoc: boolean) {
+    if (!isPrivateDoc) {
+      return;
+    }
+
+    // only create live session if this is not a community document
     const liveSessionLink = await createLiveSession(doc.id);
     console.log("liveSessionLink:", liveSessionLink);
 
@@ -123,7 +129,7 @@ export default function DocumentBlock({
           {format(doc.createdAt ?? "", "MMMM do, yyyy")}
         </div>
 
-        {blockHover && !isCommunityDoc && (
+        {blockHover && (doc.privacy === Privacy.PRIVATE || !communityDoc) && (
           <Image
             className="cursor-pointer"
             height={18}
@@ -137,10 +143,12 @@ export default function DocumentBlock({
       <div className="font-medium">{doc.title}</div>
       <div>{doc.comment}</div>
 
+      {/* Rating */}
       <div className="flex gap-1">{renderRating(doc.averageRating)}</div>
+
       <div className="flex">
         <button
-          onClick={handleLiveSession}
+          onClick={() => handleLiveSession(doc.privacy === Privacy.PRIVATE)}
           className="text-sm h-[32px] w-[32px] hover:w-[74px] transition-all duration-300 rounded-[50%] hover:rounded-3xl border border-customBorderGray cursor-pointer"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => setHover(false)}
