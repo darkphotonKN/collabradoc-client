@@ -59,22 +59,9 @@ export default function DocumentBlock({
   }
 
   function renderRating(rating?: number) {
-    console.log("rating:", rating);
     if (!rating) {
       return null;
     }
-
-    /*
-     * Examples
-     * 4.3 // render 4.5 stars
-     * 3.9 // render 4 stars
-     * 3.2 // render 3 stars
-     *
-     * Find out the closest .5 or whole number
-     *
-     * Possibilities
-     * 0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5
-     */
 
     const ratingTiers = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
     let ratingTierIndex = 0;
@@ -95,8 +82,6 @@ export default function DocumentBlock({
       }
     });
 
-    console.log("Closest tier index was:", ratingTierIndex);
-    console.log("Closest rating was:", ratingTiers[ratingTierIndex]);
     const ratingsArrLength = Math.floor(ratingTiers[ratingTierIndex]);
     const ratingsArr = new Array(ratingsArrLength).fill(0);
     const stars = ratingsArr.map((rating) => (
