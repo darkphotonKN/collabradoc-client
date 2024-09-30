@@ -36,8 +36,10 @@ export default function DocumentBlock({
   const [blockHover, setBlockHover] = useState(false);
 
   // create live session when user attempts to edit document
-  async function handleLiveSession(isPrivateDoc: boolean) {
-    if (!isPrivateDoc) {
+  async function handleLiveSession(isPublicDoc: boolean) {
+    console.log("Checking isPublicDoc:", isPublicDoc);
+    if (isPublicDoc) {
+      router.push(`/docs-live/community?documentId=${doc.id}`);
       return;
     }
 
@@ -148,7 +150,10 @@ export default function DocumentBlock({
 
       <div className="flex">
         <button
-          onClick={() => handleLiveSession(doc.privacy === Privacy.PRIVATE)}
+          onClick={() => {
+            console.log("doc.privacy:", doc.privacy);
+            handleLiveSession(doc.privacy === Privacy.PUBLIC && communityDoc);
+          }}
           className="text-sm h-[32px] w-[32px] hover:w-[74px] transition-all duration-300 rounded-[50%] hover:rounded-3xl border border-customBorderGray cursor-pointer"
           onMouseEnter={() => handleHover(true)}
           onMouseLeave={() => setHover(false)}

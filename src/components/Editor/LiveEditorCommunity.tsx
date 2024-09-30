@@ -4,7 +4,7 @@ import EditorOptions from "./EditorOptions";
 import useWebsocketCommunityServer from "@/hooks/useWebsocketCommunityServer";
 
 type LiveEditorProps = {
-  documentId?: string;
+  documentId: string;
 };
 
 export default function LiveEditorCommunity({ documentId }: LiveEditorProps) {
@@ -14,7 +14,7 @@ export default function LiveEditorCommunity({ documentId }: LiveEditorProps) {
       documentId,
     });
 
-  console.log("systemMsgPopup", systemMsgPopup);
+  console.log("communitySessionAuthorized", communitySessionAuthorized);
 
   if (!communitySessionAuthorized) {
     return (

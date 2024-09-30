@@ -29,6 +29,10 @@ export default function useWebsocketCommunityServer(
     const accessToken = getToken("access");
     console.log("access token:", accessToken);
 
+    console.log(
+      "useWEbsocketCommunityServer documentId:",
+      wsServerSetupOptions?.documentId,
+    );
     // connect to websocket server with jwt authentication
     const socket = new WebSocket(
       `ws://localhost:5050/ws/public?documentId=${wsServerSetupOptions?.documentId}`,
